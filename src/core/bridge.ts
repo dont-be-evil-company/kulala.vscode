@@ -83,6 +83,38 @@ export type LspRequestOpts = {
 
 type CorePayload = Record<string, unknown>;
 
+export type HttpStreamEvent = {
+  type: "http-stream";
+  event: "headers" | "chunk" | "error";
+  status?: number;
+  httpVersion?: string;
+  headers?: Record<string, string>;
+  url?: string;
+  data?: string;
+  error?: string;
+  blockName?: string;
+};
+
+export function parseHttpStreamLine(line: string): HttpStreamEvent | undefined {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith("{")) return undefined;
+  try {
+    const value = JSON.parse(trimmed) as HttpStreamEvent;
+    if (value && value.type === "http-stream" && typeof value.event === "string") {
+      return value;
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
+
+function contentRequestsKeepAlive(payload: CorePayload): boolean {
+  return (
+    typeof payload.content === "string" && payload.content.includes("@kulala-keep-alive-stream")
+  );
+}
+
 export class KulalaCoreBridge {
   private active: ChildProcessWithoutNullStreams | undefined;
 
@@ -108,11 +140,12 @@ export class KulalaCoreBridge {
   private invoke(
     payload: CorePayload,
     cwd?: string,
+    hooks?: { onHttpStream?: (event: HttpStreamEvent) => void },
   ): Promise<{ stdout: string; stderr: string; code: number }> {
     return new Promise((resolve, reject) => {
       this.executable()
         .then((exe) => {
-          const timeout = timeoutMs();
+          const timeout = contentRequestsKeepAlive(payload) ? 0 : timeoutMs();
           const child = spawn(exe, [], {
             cwd: cwd && cwd.length > 0 ? cwd : undefined,
             env: this.env(),
@@ -122,10 +155,22 @@ export class KulalaCoreBridge {
 
           let stdout = "";
           let stderr = "";
+          let pending = "";
           child.stdout.setEncoding("utf8");
           child.stderr.setEncoding("utf8");
-          child.stdout.on("data", (c) => {
-            stdout += c;
+          const takeLine = (line: string): void => {
+            const event = parseHttpStreamLine(line);
+            if (event) {
+              hooks?.onHttpStream?.(event);
+              return;
+            }
+            stdout += `${line}\n`;
+          };
+          child.stdout.on("data", (c: string) => {
+            pending += c;
+            const lines = pending.split("\n");
+            pending = lines.pop() ?? "";
+            for (const line of lines) takeLine(line);
           });
           child.stderr.on("data", (c) => {
             stderr += c;
@@ -147,6 +192,11 @@ export class KulalaCoreBridge {
           child.on("close", (code) => {
             if (timer) clearTimeout(timer);
             this.active = undefined;
+            if (pending) {
+              const event = parseHttpStreamLine(pending);
+              if (event) hooks?.onHttpStream?.(event);
+              else stdout += pending;
+            }
             resolve({ stdout, stderr, code: code ?? 1 });
           });
 
@@ -213,7 +263,13 @@ export class KulalaCoreBridge {
 
   async run(
     content: string,
-    opts: { filepath?: string; env: string; limit?: KulalaRunLimit[]; cwd?: string },
+    opts: {
+      filepath?: string;
+      env: string;
+      limit?: KulalaRunLimit[];
+      cwd?: string;
+      onHttpStream?: (event: HttpStreamEvent) => void;
+    },
   ): Promise<{ wrapper?: KulalaResponseWrapper; err?: string }> {
     const payload: CorePayload = {
       action: "run",
@@ -222,7 +278,7 @@ export class KulalaCoreBridge {
     };
     if (opts.filepath) payload.filepath = opts.filepath;
     if (opts.limit?.length) payload.limit = opts.limit;
-    const job = await this.invoke(payload, opts.cwd);
+    const job = await this.invoke(payload, opts.cwd, { onHttpStream: opts.onHttpStream });
     return this.runResultFromJob(job);
   }
 

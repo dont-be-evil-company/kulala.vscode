@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import type { KulalaCoreBridge } from "./core/bridge";
+import type { HttpStreamEvent, KulalaCoreBridge } from "./core/bridge";
 import type { KulalaRequestResult, KulalaRunLimit } from "./core/types";
 import { getSelectedEnv, responseViewColumnAfterOpenapi } from "./config";
 import type { DocumentContext } from "./document";
@@ -67,6 +67,7 @@ export class RequestRunner {
   private running = false;
   private wsSession: WebSocketSession | undefined;
   private wsEntryId: string | undefined;
+  private streamEntryIds = new Map<string, string>();
   private lastCtx: DocumentContext | undefined;
 
   constructor(
@@ -211,6 +212,7 @@ export class RequestRunner {
       env,
       limit,
       cwd: ctx.cwd,
+      onHttpStream: (event) => this.onHttpStream(event),
     });
 
     if (err) {
@@ -301,7 +303,46 @@ export class RequestRunner {
       await this.startWebSocket(item, ctx);
       return;
     }
+    const streamKey = item.blockName?.trim() || "";
+    const streamId = this.streamEntryIds.get(streamKey);
+    if (streamId) {
+      this.streamEntryIds.delete(streamKey);
+      const state = ResponsePanel.fromResult(item);
+      this.panel.replaceEntry(streamId, state);
+      return;
+    }
     this.showResponse(ResponsePanel.fromResult(item), opts?.afterOpenapi === true);
+  }
+
+  private onHttpStream(event: HttpStreamEvent): void {
+    const key = event.blockName?.trim() || "";
+    if (event.event === "headers") {
+      const id = this.panel.beginHttpStream({
+        status: event.status,
+        url: event.url,
+        headers: event.headers,
+        blockName: event.blockName,
+      });
+      this.streamEntryIds.set(key, id);
+      return;
+    }
+    const id = this.streamEntryIds.get(key);
+    if (!id) return;
+    if (event.event === "chunk") {
+      const current = this.panel.getEntryById(id);
+      const data = event.data ?? "";
+      if (!data) return;
+      const body = `${current?.body ?? ""}${data}`;
+      this.panel.updateEntry(id, { body, rawBody: body, bodyKind: "text" });
+      return;
+    }
+    if (event.event === "error") {
+      this.panel.updateEntry(id, {
+        error: event.error ?? "stream failed",
+        status: "Error",
+        statusBadgeClass: "kulala-badge-error",
+      });
+    }
   }
 
   async openOpenapiExplorer(ctx: DocumentContext): Promise<void> {

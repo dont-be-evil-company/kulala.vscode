@@ -4,7 +4,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-REPO="${KULALA_HTTP_GRAMMAR_REPO:-https://github.com/mistweaverco/tree-sitter-kulala-http.git}"
+REPO="${KULALA_HTTP_GRAMMAR_REPO:-https://github.com/dont-be-evil-company/tree-sitter-kulala-http.git}"
 REF="${KULALA_HTTP_GRAMMAR_REF:-main}"
 CACHE="${KULALA_HTTP_GRAMMAR_DIR:-$ROOT/.cache/tree-sitter-kulala-http}"
 OUT="$ROOT/syntaxes"

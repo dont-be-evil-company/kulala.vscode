@@ -1,7 +1,7 @@
 {
   "name": "kulala",
   "displayName": "Kulala",
-  "version": "0.13.0",
+  "version": "1.0.0",
   "description": "A fully-featured HTTP/GraphQL/gRPC/Websocket-client interface for (Visual Studio) Code, that supports the Jetbrains .http spec (with full scripting support).",
   "categories": [
     "Other"
@@ -13,16 +13,16 @@
     "http",
     "rest"
   ],
-  "homepage": "https://github.com/mistweaverco/kulala.vscode",
+  "homepage": "https://github.com/dont-be-evil-company/kulala.vscode",
   "bugs": {
-    "url": "https://github.com/mistweaverco/kulala.vscode/issues"
+    "url": "https://github.com/dont-be-evil-company/kulala.vscode/issues"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mistweaverco/kulala.vscode"
+    "url": "https://github.com/dont-be-evil-company/kulala.vscode"
   },
-  "publisher": "mistweaverco",
+  "publisher": "The Don't Be Evil Company",
   "main": "./dist/extension.js",
   "scripts": {
     "build": "./scripts/package.sh",
@@ -235,7 +235,7 @@
         },
         "kulala.downloadUrl": {
           "type": "string",
-          "default": "https://github.com/mistweaverco/kulala-core/releases/download/%s/%s",
+          "default": "https://github.com/dont-be-evil-company/kulala-core/releases/download/%s/%s",
           "description": "URL template for kulala-core downloads (%s = tag, %s = asset filename)."
         },
         "kulala.responseView": {
@@ -271,7 +271,7 @@
         "kulala.syntaxHighlighting": {
           "type": "boolean",
           "default": true,
-          "description": "Use the kulala_http tree-sitter grammar (github.com/mistweaverco/tree-sitter-kulala-http) for semantic highlighting in .http files."
+          "description": "Use the kulala_http tree-sitter grammar (github.com/dont-be-evil-company/tree-sitter-kulala-http) for semantic highlighting in .http files."
         }
       }
     },

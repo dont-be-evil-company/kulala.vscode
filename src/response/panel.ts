@@ -119,6 +119,53 @@ export class ResponsePanel {
     this.updateWebview();
   }
 
+  beginHttpStream(event: {
+    status?: number;
+    url?: string;
+    headers?: Record<string, string>;
+    blockName?: string;
+  }): string {
+    const id = newEntryId();
+    const badge = statusBadge(event.status);
+    const rows = headerRows(event.headers);
+    this.show({
+      id,
+      at: Date.now(),
+      title: `Kulala Result: ${event.status ?? "Streaming"}`,
+      blockName: displayBlockName(event.blockName),
+      status: event.status ?? "Streaming",
+      statusBadgeClass: badgeClass(badge),
+      url: event.url,
+      body: "",
+      bodyKind: "text",
+      rawBody: "",
+      headers: rows.map((row) => `${row.name}: ${row.value}`).join("\n"),
+      headersRows: rows,
+      stats: "",
+      timingRows: [],
+      console: "",
+      consoleLines: [],
+      testGroups: [],
+      verbose: emptyVerbose,
+    });
+    return id;
+  }
+
+  replaceEntry(id: string, state: ResponseViewState): void {
+    const idx = this.history.findIndex((entry) => entry.id === id);
+    if (idx < 0) {
+      this.show({ ...state, id });
+      return;
+    }
+    const next = { ...state, id };
+    this.history[idx] = next;
+    if (this.historyIndex === idx) {
+      this.last = next;
+      if (this.panel) this.panel.title = next.title;
+    }
+    this.updateWebview();
+  }
+
   updateEntry(id: string, patch: Partial<ResponseViewState>): void {
     const idx = this.history.findIndex((e) => e.id === id);
     if (idx < 0) return;

@@ -103,7 +103,7 @@ External script files must be named `something.http.ts` (etc.) when `kulala.enfo
 
 ### Syntax highlighting
 
-Kulala bundles the **kulala_http** grammar from [mistweaverco/tree-sitter-kulala-http](https://github.com/mistweaverco/tree-sitter-kulala-http) (`syntaxes/kulala_http.wasm` + query files). **Language injections** (from upstream `queries/kulala_http/injections.scm`) re-highlight embedded content using additional grammars under `syntaxes/grammars/` (json, javascript, typescript, lua, graphql, xml).
+Kulala bundles the **kulala_http** grammar from [dont-be-evil-company/tree-sitter-kulala-http](https://github.com/dont-be-evil-company/tree-sitter-kulala-http) (`syntaxes/kulala_http.wasm` + query files). **Language injections** (from upstream `queries/kulala_http/injections.scm`) re-highlight embedded content using additional grammars under `syntaxes/grammars/` (json, javascript, typescript, lua, graphql, xml).
 
 Inline `{% %}` scripts use short language tags on
 the opening line (same as kulala-core):
@@ -131,7 +131,7 @@ Optional environment variables:
 
 | Variable                      | Default                                                       | Purpose                                          |
 | ----------------------------- | ------------------------------------------------------------- | ------------------------------------------------ |
-| `KULALA_HTTP_GRAMMAR_REPO`    | `https://github.com/mistweaverco/tree-sitter-kulala-http.git` | Host grammar clone URL                           |
+| `KULALA_HTTP_GRAMMAR_REPO`    | `https://github.com/dont-be-evil-company/tree-sitter-kulala-http.git` | Host grammar clone URL                           |
 | `KULALA_HTTP_GRAMMAR_REF`     | `main`                                                        | Host grammar branch or tag                       |
 | `KULALA_HTTP_GRAMMAR_DIR`     | `.cache/tree-sitter-kulala-http`                              | Host grammar cache                               |
 | `KULALA_GRAPHQL_GRAMMAR_REPO` | `https://github.com/joowani/tree-sitter-graphql.git`          | GraphQL grammar (npm package does not ship wasm) |
@@ -181,24 +181,24 @@ or you can point `kulala.corePath` at your own build.
 
 MIT
 
-[badge-discord]: https://mistweaverco.com/assets/badges/discord.svg
-[discord]: https://mistweaverco.com/discord
-[badge-made-with-love]: https://mistweaverco.com/assets/badges/made-with-love.svg
-[contributors]: https://github.com/mistweaverco/kulala.vscode/graphs/contributors
-[kulala-cli]: https://github.com/mistweaverco/kulala-cli
-[kulala-fmt]: https://github.com/mistweaverco/kulala-fmt
-[kulala-desktop]: https://github.com/mistweaverco/kulala-desktop
-[kulala.nvim]: https://github.com/mistweaverco/kulala.nvim
-[kulala-core]: https://github.com/mistweaverco/kulala-core
-[kulala-github-action]: https://github.com/mistweaverco/kulala-github-action
-[badge-development-status]: https://mistweaverco.com/assets/badges/development-status.svg
-[development-status]: https://mistweaverco.com/roadmap?filter=kulala.vscode
-[badge-ai-policy]: https://mistweaverco.com/assets/badges/ai-policy.svg
-[ai-policy]: https://mistweaverco.com/ai-policy
-[badge-our-manifesto]: https://mistweaverco.com/assets/badges/our-manifesto.svg
-[our-manifesto]: https://mistweaverco.com/manifesto
-[kulala-tree-sitter]: https://github.com/mistweaverco/tree-sitter-kulala-http
-[badge-vscode-market]: https://mistweaverco.com/assets/badges/vscode-market.svg
+[badge-discord]: https://the-dont-be-evil-company.com/assets/badges/discord.svg
+[discord]: https://the-dont-be-evil-company.com/discord
+[badge-made-with-love]: https://the-dont-be-evil-company.com/assets/badges/made-with-love.svg
+[contributors]: https://github.com/dont-be-evil-company/kulala.vscode/graphs/contributors
+[kulala-cli]: https://github.com/dont-be-evil-company/kulala-cli
+[kulala-fmt]: https://github.com/dont-be-evil-company/kulala-fmt
+[kulala-desktop]: https://github.com/dont-be-evil-company/kulala-desktop
+[kulala.nvim]: https://github.com/dont-be-evil-company/kulala.nvim
+[kulala-core]: https://github.com/dont-be-evil-company/kulala-core
+[kulala-github-action]: https://github.com/dont-be-evil-company/kulala-github-action
+[badge-development-status]: https://the-dont-be-evil-company.com/assets/badges/development-status.svg
+[development-status]: https://the-dont-be-evil-company.com/roadmap?filter=kulala.vscode
+[badge-ai-policy]: https://the-dont-be-evil-company.com/assets/badges/ai-policy.svg
+[ai-policy]: https://the-dont-be-evil-company.com/ai-policy
+[badge-our-manifesto]: https://the-dont-be-evil-company.com/assets/badges/our-manifesto.svg
+[our-manifesto]: https://the-dont-be-evil-company.com/manifesto
+[kulala-tree-sitter]: https://github.com/dont-be-evil-company/tree-sitter-kulala-http
+[badge-vscode-market]: https://the-dont-be-evil-company.com/assets/badges/vscode-market.svg
 [vscode-market]: https://marketplace.visualstudio.com/items?itemName=mistweaverco.kulala
-[badge-openvsx]: https://mistweaverco.com/assets/badges/openvsx.svg
+[badge-openvsx]: https://the-dont-be-evil-company.com/assets/badges/openvsx.svg
 [openvsx]: https://open-vsx.org/extension/mistweaverco/kulala
