@@ -27,12 +27,16 @@ export type WebSocketConnectOptions = {
   url: string;
   body?: string;
   headers?: Record<string, string>;
+  messages?: Array<{ waitForServer: number; data: string }>;
+  timeoutMs?: number;
 };
 
 export type WebSocketEvent =
   | { type: "ready" }
   | { type: "message"; data: string }
   | { type: "sent"; data: string }
+  | { type: "waiting"; remaining: number }
+  | { type: "script-done" }
   | { type: "error"; error: string }
   | { type: "closed"; code?: number };
 
@@ -666,12 +670,20 @@ export class KulalaCoreBridge {
             data?: string;
             error?: string;
             code?: number;
+            remaining?: number;
           };
           if (msg.type === "ready") handlers.onEvent({ type: "ready" });
           else if (msg.type === "message" && msg.data != null) {
             handlers.onEvent({ type: "message", data: msg.data });
           } else if (msg.type === "sent" && msg.data != null) {
             handlers.onEvent({ type: "sent", data: msg.data });
+          } else if (msg.type === "waiting") {
+            handlers.onEvent({
+              type: "waiting",
+              remaining: typeof msg.remaining === "number" ? msg.remaining : 0,
+            });
+          } else if (msg.type === "script-done") {
+            handlers.onEvent({ type: "script-done" });
           } else if (msg.type === "error") {
             handlers.onEvent({ type: "error", error: msg.error ?? "WebSocket error" });
           } else if (msg.type === "closed") {

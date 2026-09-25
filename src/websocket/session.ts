@@ -32,6 +32,7 @@ export class WebSocketSession {
   private connected = false;
   private closed = false;
   private error: string | undefined;
+  private statusLine = "";
   private readonly initialMessage?: string;
 
   constructor(
@@ -55,17 +56,30 @@ export class WebSocketSession {
 
     const url = this.plan.url ?? this.plan.request?.url ?? "";
     const headers = this.plan.request?.headers;
-    const body = this.plan.request?.body ?? this.plan.initialMessage;
+    const messages = this.plan.messages;
+    const connect = Array.isArray(messages)
+      ? {
+          url,
+          headers,
+          messages,
+          ...(this.plan.timeoutMs !== undefined ? { timeoutMs: this.plan.timeoutMs } : {}),
+        }
+      : {
+          url,
+          headers,
+          body: this.plan.request?.body ?? this.plan.initialMessage,
+        };
 
     this.handle = await this.bridge.websocketStart(
-      { url, body, headers },
+      connect,
       {
         onEvent: (ev) => {
           if (ev.type === "ready") {
             this.connected = true;
             this.welcome =
-              "Connected… waiting for messages.\n" +
-              "Use the compose box below to send data.\n" +
+              "Connected…\n" +
+              "Scripted === messages are sent automatically.\n" +
+              "Use the compose box below to send more data.\n" +
               "Press Kulala: Close WebSocket or cancel to disconnect.\n\n";
             this.refresh();
           } else if (ev.type === "message") {
@@ -74,8 +88,16 @@ export class WebSocketSession {
           } else if (ev.type === "sent") {
             this.messages.push({ direction: "out", data: ev.data });
             this.refresh();
+          } else if (ev.type === "waiting") {
+            const count = ev.remaining === 1 ? "message" : "messages";
+            this.statusLine = `Waiting for ${ev.remaining} server ${count}…\n`;
+            this.refresh();
+          } else if (ev.type === "script-done") {
+            this.statusLine = "Script finished. Use the compose box to send more.\n";
+            this.refresh();
           } else if (ev.type === "error") {
             this.error = ev.error;
+            if (this.connected) this.statusLine = `${ev.error}\n`;
             this.refresh();
           } else if (ev.type === "closed") {
             this.closed = true;
@@ -132,7 +154,7 @@ export class WebSocketSession {
   }
 
   private async refreshAsync(): Promise<void> {
-    const prefix = this.welcome;
+    const prefix = this.welcome + this.statusLine;
     const stream = buildWsDisplayStream(this.messages);
     const filter = this.filter;
 

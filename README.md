@@ -58,7 +58,7 @@ Kulala is swahili for "rest" or "relax."
 
 ### Marketplace
 
-Install **Kulala** (`mistweaverco.kulala`) from the VS Code Marketplace.
+Install **Kulala** (`dont-be-evil-company.kulala`) from the VS Code Marketplace.
 
 ### From source
 
@@ -199,6 +199,6 @@ MIT
 [our-manifesto]: https://the-dont-be-evil-company.com/manifesto
 [kulala-tree-sitter]: https://github.com/dont-be-evil-company/tree-sitter-kulala-http
 [badge-vscode-market]: https://the-dont-be-evil-company.com/assets/badges/vscode-market.svg
-[vscode-market]: https://marketplace.visualstudio.com/items?itemName=mistweaverco.kulala
+[vscode-market]: https://marketplace.visualstudio.com/items?itemName=dont-be-evil-company.kulala
 [badge-openvsx]: https://the-dont-be-evil-company.com/assets/badges/openvsx.svg
 [openvsx]: https://open-vsx.org/extension/mistweaverco/kulala

@@ -22,7 +22,7 @@
     "type": "git",
     "url": "https://github.com/dont-be-evil-company/kulala.vscode"
   },
-  "publisher": "The Don't Be Evil Company",
+  "publisher": "dont-be-evil-company",
   "main": "./dist/extension.js",
   "scripts": {
     "build": "./scripts/package.sh",
@@ -318,5 +318,5 @@
   "engines": {
     "vscode": "^1.105.1"
   },
-  "packageManager": "pnpm@11.20.0"
+  "packageManager": "pnpm@12.6.0"
 }

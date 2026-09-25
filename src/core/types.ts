@@ -53,6 +53,8 @@ export type KulalaRequestResult = {
   httpCompleted?: boolean;
   protocol?: string;
   initialMessage?: string;
+  messages?: Array<{ waitForServer: number; data: string }>;
+  timeoutMs?: number;
   body?: KulalaResponseBody;
   filteredBody?: KulalaResponseBody;
   rawBody?: string;
