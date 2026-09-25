@@ -1,3 +1,10 @@
+## [1.0.0](https://github.com/dont-be-evil-company/kulala.vscode/compare/v0.13.0...v1.0.0) (2026-09-25)
+
+### Features
+
+* **streaming:** add streaming support and change orgs ([5694795](https://github.com/dont-be-evil-company/kulala.vscode/commit/5694795901dce2978e8648df52e90dec0ea9372b))
+* **websocket:** add wait-for-server ([c857a90](https://github.com/dont-be-evil-company/kulala.vscode/commit/c857a9091793cae10ca1aa82eef1c44d48b1571e))
+
 ## [0.13.0](https://github.com/dont-be-evil-company/kulala.vscode/compare/v0.12.0...v0.13.0) (2026-08-18)
 
 ### Features
